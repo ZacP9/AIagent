@@ -1,3 +1,4 @@
+from config import MAX_FILE_CONTENT_CHAR
 
 def get_files_info(working_directory, directory="."):
     """
@@ -8,7 +9,7 @@ def get_files_info(working_directory, directory="."):
         directory (str): The subdirectory to search in, defaults to current directory.
 
     Returns:
-        list: A list of dictionaries containing file names and their sizes.
+        string: A string containing file names and their sizes.
     """
     import os
 
@@ -41,6 +42,37 @@ def get_files_info(working_directory, directory="."):
     all_content_string = "\n".join(files_info)
     return all_content_string
 
-# - README.md: file_size=1032 bytes, is_dir=False
-# - src: file_size=128 bytes, is_dir=True
-# - package.json: file_size=1234 bytes, is_dir=False
+
+def get_file_content(working_directory, file_path):
+    """
+    Get the content of a file in the specified directory.
+
+    Args:
+        working_directory (str): The base directory to search in.
+        file_path (str): The path to the file relative to the working directory.
+
+    Returns:
+        str: The content of the file or an error message if the file does not exist.
+    """
+    import os
+
+
+    full_path = os.path.join(working_directory, file_path)
+
+    abs_full_path = os.path.abspath(full_path)
+    abs_working_dir = os.path.abspath(working_directory)
+
+
+    if not abs_full_path.startswith(abs_working_dir):
+        return f'Error: Cannot read "{file_path}" as it is outside the permitted working directory'
+
+    if not os.path.isfile(full_path):
+        return f'Error: File not found or is not a regular file: "{file_path}"'
+
+    try:
+        with open(full_path, 'r') as file:
+            content = file.read(MAX_FILE_CONTENT_CHAR)
+    except Exception as e:
+        return f'Error: Could not read file "{file_path}": {str(e)}'
+
+    return content
