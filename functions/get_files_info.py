@@ -56,12 +56,10 @@ def get_file_content(working_directory, file_path):
     """
     import os
 
-
     full_path = os.path.join(working_directory, file_path)
 
     abs_full_path = os.path.abspath(full_path)
     abs_working_dir = os.path.abspath(working_directory)
-
 
     if not abs_full_path.startswith(abs_working_dir):
         return f'Error: Cannot read "{file_path}" as it is outside the permitted working directory'
@@ -70,9 +68,44 @@ def get_file_content(working_directory, file_path):
         return f'Error: File not found or is not a regular file: "{file_path}"'
 
     try:
-        with open(full_path, 'r') as file:
-            content = file.read(MAX_FILE_CONTENT_CHAR)
+        with open(full_path, 'r') as f:
+            content = f.read(MAX_FILE_CONTENT_CHAR)
     except Exception as e:
         return f'Error: Could not read file "{file_path}": {str(e)}'
 
     return content
+
+def write_file(working_directory, file_path, content):
+    """
+    Write content to a file in the specified directory.
+
+    Args:
+        working_directory (str): The base directory to write in.
+        file_path (str): The path to the file relative to the working directory.
+        content (str): The content to write to the file.
+
+    Returns:
+        str: A success message or an error message if the write operation fails.
+    """
+    import os
+
+    full_path = os.path.join(working_directory, file_path)
+
+    abs_full_path = os.path.abspath(full_path)
+    abs_working_dir = os.path.abspath(working_directory)
+
+    if not abs_full_path.startswith(abs_working_dir):
+        return f'Error: Cannot write to "{file_path}" as it is outside the permitted working directory'
+    
+    # if path does not exist, create the necessary directories
+    try:
+        os.makedirs(os.path.dirname(full_path), exist_ok=True)
+    except Exception as e:
+        return f'Error: Could not create directories for "{file_path}": {str(e)}'   
+
+    try:
+        with open(full_path, 'w') as f:
+            f.write(content)
+        return f'Successfully wrote to "{file_path}" ({len(content)} characters written)'
+    except Exception as e:
+        return f'Error: Could not write to file "{file_path}": {str(e)}'
