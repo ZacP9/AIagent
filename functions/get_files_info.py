@@ -1,5 +1,6 @@
 from config import MAX_FILE_CONTENT_CHAR
 
+
 def get_files_info(working_directory, directory="."):
     """
     Get information about files in the specified directory.
