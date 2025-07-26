@@ -25,9 +25,12 @@ def main():
     if verbose:
         print(f"User prompt: {content}")
 
-    content = sys.argv[1]
-
+    # Check for API key
     api_key = os.environ.get("GEMINI_API_KEY")
+    if not api_key:
+        print("Error: GEMINI_API_KEY environment variable is required")
+        sys.exit(1)
+        
     client = genai.Client(api_key=api_key)
 
     model_name = "gemini-2.0-flash-001"

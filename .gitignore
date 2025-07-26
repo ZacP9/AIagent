@@ -9,3 +9,17 @@ wheels/
 # Virtual environments
 .venv
 .env
+
+# Environment variables
+.env
+.env.local
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
